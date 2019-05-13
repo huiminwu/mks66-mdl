@@ -47,15 +47,16 @@ def run(filename):
                           'blue': [0.2, 0.5, 0.5]}]
     reflect = '.white'
 
-    print symbols
     for command in commands:
-	if command["op"] == 'sphere':
+        if command["op"] == 'sphere':
             #print 'SPHERE\t' + str(args)
             add_sphere(polygons,
                        float(command["args"][0]), float(command["args"][1]), float(command["args"][2]),
                        float(command["args"][3]), step_3d)
             matrix_mult( systems[-1], polygons )
-            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+            if command["constants"] is not None:
+                reflect = command["constants"]
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
             polygons = []
 
         elif command["op"] == 'torus':
@@ -64,7 +65,9 @@ def run(filename):
                       float(command["args"][0]), float(command["args"][1]), float(command["args"][2]),
                       float(command["args"][3]), float(command["args"][4]), step_3d)
             matrix_mult( systems[-1], polygons )
-            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+            if command["constants"] is not None:
+                reflect = command["constants"]
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
             polygons = []
 
         elif command["op"] == 'box':
@@ -73,7 +76,9 @@ def run(filename):
                     float(command["args"][0]), float(command["args"][1]), float(command["args"][2]),
                     float(command["args"][3]), float(command["args"][4]), float(command["args"][5]))
             matrix_mult( systems[-1], polygons )
-            draw_polygons(polygons, screen, zbuffer, view, ambient, light, areflect, dreflect, sreflect)
+            if command["constants"] is not None:
+                reflect = command["constants"]
+            draw_polygons(polygons, screen, zbuffer, view, ambient, light, symbols, reflect)
             polygons = []
 
         elif command["op"] == 'circle':
@@ -141,4 +146,4 @@ def run(filename):
             if command["op"] == 'display':
                 display(screen)
             else:
-                save_extension(screen, args[0])
+                save_extension(screen, command["args"][0])
